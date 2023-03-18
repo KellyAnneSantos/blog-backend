@@ -5,6 +5,8 @@ require("dotenv/config");
 
 const api = process.env.API;
 
+app.use(express.json());
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
