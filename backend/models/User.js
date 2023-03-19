@@ -32,10 +32,10 @@ const userSchema = new schema(
       required: true,
       type: String,
     },
-    resetPasswordLink: {
-      data: String,
-      default: "",
-    },
+    // resetPasswordLink: {
+    //   data: String,
+    //   default: "",
+    // },
     role: {
       trim: true,
       type: Number,

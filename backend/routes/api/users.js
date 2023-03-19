@@ -10,29 +10,30 @@ router.get("/test", (req, res) => {
   res.json({ msg: "This is the user route" });
 });
 
-router.post("/register", (req, res) => {
+router.post("/register", validateRegisterInput, runValidation, (req, res) => {
   const { name, email, password } = req.body;
-  User.findOne({ email }).exec((err, user) => {
+  User.findOne({ email }).then((user) => {
     if (user) {
       return res.status(400).json({
-        error: "A user is already registered with that email",
+        error: "A User is already registered with that email",
       });
-    }
-
-    let username = shortId.generate();
-    let profile = `${process.env.CLIENT_URL}/profile/${username}`;
-
-    let newUser = new User({ name, email, password, profile, username });
-    newUser.save((err, success) => {
-      if (err) {
-        return res.status(400).json({
-          error: err,
+    } else {
+      let username = shortId.generate();
+      let profile = `${process.env.URL}/profile/${username}`;
+      let newUser = new User({ name, email, password, profile, username });
+      newUser
+        .save()
+        .then(function (user) {
+          return res.json({
+            message: "Signup success! Please sign in.",
+          });
+        })
+        .catch(function (err) {
+          return res.status(400).json({
+            error: err,
+          });
         });
-      }
-      res.json({
-        message: "Signup success! Please sign in.",
-      });
-    });
+    }
   });
 });
 
