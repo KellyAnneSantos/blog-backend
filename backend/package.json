@@ -24,6 +24,7 @@
     "lodash": "^4.17.21",
     "mongoose": "^7.0.2",
     "morgan": "^1.10.0",
+    "shortid": "^2.2.16",
     "slugify": "^1.6.5",
     "string-strip-html": "^13.2.1"
   }
