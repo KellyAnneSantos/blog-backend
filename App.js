@@ -1,20 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+const express = require("express");
+const app = express();
+const morgan = require("morgan");
+const mongoose = require("mongoose");
+const db = require("./config/keys").mongoURI;
+const users = require("./routes/api/users");
+const cors = require("cors");
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+require("dotenv/config");
+
+// const api = process.env.API;
+
+app.use(express.json());
+app.use(morgan("dev"));
+
+if (process.env.NODE_ENV === "development") {
+  app.use(cors({ origin: `${process.env.URL}` }));
+  app.options("*", cors());
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+mongoose
+  .connect(db, { useNewUrlParser: true })
+  .then(() => console.log("connected to mongoDB"))
+  .catch((err) => console.log(err));
+
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
+app.use("/api/users", users);
+
+const port = process.env.PORT || 8000;
+
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
 });

@@ -1,21 +1,31 @@
 {
-  "name": "my-app",
+  "name": "backend",
   "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
+  "description": "backend",
+  "main": "app.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "server:debug": "nodemon --inspect app.js",
+    "server": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.21"
   },
   "dependencies": {
-    "expo": "~48.0.6",
-    "expo-status-bar": "~1.4.4",
-    "react": "18.2.0",
-    "react-native": "0.71.3"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.20.0"
-  },
-  "private": true
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-jwt": "^8.4.1",
+    "express-validator": "^6.15.0",
+    "formidable": "^2.1.1",
+    "jsonwebtoken": "^9.0.0",
+    "lodash": "^4.17.21",
+    "mongoose": "^7.0.2",
+    "morgan": "^1.10.0",
+    "shortid": "^2.2.16",
+    "slugify": "^1.6.5",
+    "string-strip-html": "^13.2.1"
+  }
 }
