@@ -2,12 +2,62 @@ const express = require("express");
 const router = express.Router();
 const User = require("../../models/User");
 const shortId = require("shortid");
-const jwt = require("jsonwebtoken");
-const expressJwt = require("express-jwt");
+const jsonwebtoken = require("jsonwebtoken");
+const { expressjwt: jwt } = require("express-jwt");
+const secret = require("../../config/keys").secretOrKey;
 
 const { runValidation } = require("../../validation");
 const { validateRegisterInput } = require("../../validation/register");
 const { userLoginValidator } = require("../../validation/login");
+
+const adminMiddleware = (req, res, next) => {
+  const adminUserId = req.auth._id;
+  User.findById({ _id: adminUserId })
+    .then((user) => {
+      if (!user) {
+        return res.status(400).json({
+          error: "User not found",
+        });
+      }
+      if (user.role !== 1) {
+        return res.status(400).json({
+          error: "Admin resource. Access denied",
+        });
+      }
+      req.profile = user;
+      next();
+    })
+    .catch(function (err) {
+      return res.status(400).json({
+        error: "User not found",
+      });
+    });
+};
+
+const authMiddleware = (req, res, next) => {
+  const authUserId = req.auth._id;
+  User.findById({ _id: authUserId })
+    .then((user) => {
+      if (!user) {
+        return res.status(400).json({
+          error: "User not found",
+        });
+      }
+      req.profile = user;
+      next();
+    })
+    .catch(function (err) {
+      return res.status(400).json({
+        error: "User not found",
+      });
+    });
+};
+
+const requireSignin = jwt({
+  secret: `${secret}`,
+  algorithms: ["HS256"],
+  userProperty: "auth",
+});
 
 router.post("/register", validateRegisterInput, runValidation, (req, res) => {
   const { name, email, password } = req.body;
@@ -47,7 +97,7 @@ router.post("/login", userLoginValidator, runValidation, (req, res) => {
         });
       }
 
-      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      const token = jsonwebtoken.sign({ _id: user._id }, `${secret}`, {
         expiresIn: 604800,
       });
 
@@ -70,6 +120,11 @@ router.get("/logout", (req, res) => {
   res.json({
     message: "Logout success",
   });
+});
+
+router.get("/profile", requireSignin, authMiddleware, (req, res) => {
+  req.profile.hashed_password = undefined;
+  return res.json(req.profile);
 });
 
 module.exports = router;

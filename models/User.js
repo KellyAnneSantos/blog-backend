@@ -37,7 +37,7 @@ const userSchema = new schema(
     //   default: "",
     // },
     role: {
-      trim: true,
+      default: 0,
       type: Number,
     },
     salt: String,
