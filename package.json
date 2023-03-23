@@ -2,11 +2,11 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "backend",
-  "main": "app.js",
+  "main": "App.js",
   "scripts": {
-    "server:debug": "nodemon --inspect app.js",
-    "server": "nodemon app.js",
-    "start": "node app.js"
+    "server:debug": "nodemon --inspect App.js",
+    "server": "nodemon App.js",
+    "start": "node App.js"
   },
   "author": "",
   "license": "ISC",
